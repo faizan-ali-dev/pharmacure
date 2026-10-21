@@ -1,0 +1,49 @@
+{% extends 'admin/base_site.html' %}
+{% block content %}
+<h1>Sales Dashboard</h1>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h5>Total Sales (This Month)</h5>
+      <p>Rs.{{ total_this_month }}</p>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h5>Total Sales (Last Month)</h5>
+      <p>Rs.{{ total_last_month }}</p>
+    </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h5>Total Sales (Today)</h5>
+      <p>Rs.{{ total_today }}</p>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h5>Recent Completed Payments</h5>
+      <ul class="list-unstyled small">
+        {% for p in recent_payments %}
+        <li>{{ p.created_at }} — Rs.{{ p.amount }} — {{ p.payment_method }} — {{ p.order }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+<h3 class="mt-4">Recent Delivered Orders</h3>
+<table class="table">
+  <thead><tr><th>User</th><th>Date</th><th>Total</th></tr></thead>
+  <tbody>
+    {% for o in recent_delivered %}
+    <tr>
+      <td>{{ o.user.username }}</td>
+      <td>{{ o.created_at }}</td>
+      <td>Rs.{{ o.total_amount }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

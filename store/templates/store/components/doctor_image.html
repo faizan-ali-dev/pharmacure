@@ -1,0 +1,7 @@
+<img 
+    src="{{ image_url }}" 
+    alt="{% if doctor.first_name %}Dr. {{ doctor.first_name }} {{ doctor.last_name }}{% else %}Doctor Profile{% endif %}"
+    class="doctor-image {{ css_class }}{% if not has_image %} no-image{% endif %}"
+    style="width: {{ size_config.width }}; height: {{ size_config.height }}; object-fit: cover; border-radius: 50%;"
+    loading="lazy"
+>

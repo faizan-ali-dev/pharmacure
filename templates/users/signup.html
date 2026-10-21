@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up - Pharmacure{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="form-container">
+        <div class="text-center mb-4">
+          <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+          <h2 class="form-title">Join Pharmacure</h2>
+          <p class="text-muted">Create your account to start ordering medicines</p>
+          <p class="text-muted small"><span class="text-danger">*</span> All fields are required</p>
+        </div>
+        
+        <!-- Display Messages -->
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+              <i class="fas {% if message.tags == 'error' %}fa-exclamation-triangle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Display Form Errors -->
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {% for error in form.non_field_errors %}
+              {{ error }}
+            {% endfor %}
+          </div>
+        {% endif %}
+        
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                  <i class="fas fa-user text-muted me-2"></i>First Name <span class="text-danger">*</span>
+                </label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                  <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                  <i class="fas fa-user text-muted me-2"></i>Last Name <span class="text-danger">*</span>
+                </label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                  <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.username.id_for_label }}" class="form-label">
+              <i class="fas fa-at text-muted me-2"></i>Username <span class="text-danger">*</span>
+            </label>
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}" class="form-label">
+              <i class="fas fa-envelope text-muted me-2"></i>Email Address <span class="text-danger">*</span>
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+              <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+              <i class="fas fa-phone text-muted me-2"></i>Phone Number <span class="text-danger">*</span>
+            </label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+              <div class="text-danger small mt-1">{{ form.phone_number.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.street.id_for_label }}" class="form-label">
+              <i class="fas fa-map-marker-alt text-muted me-2"></i>Street Address <span class="text-danger">*</span>
+            </label>
+            {{ form.street }}
+            {% if form.street.errors %}
+              <div class="text-danger small mt-1">{{ form.street.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.city.id_for_label }}" class="form-label">
+              <i class="fas fa-city text-muted me-2"></i>City <span class="text-danger">*</span>
+            </label>
+            {{ form.city }}
+            {% if form.city.errors %}
+              <div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}" class="form-label">
+                  <i class="fas fa-lock text-muted me-2"></i>Password <span class="text-danger">*</span>
+                </label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                  <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}" class="form-label">
+                  <i class="fas fa-lock text-muted me-2"></i>Confirm Password <span class="text-danger">*</span>
+                </label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                  <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100 mb-3">
+            <i class="fas fa-user-plus me-2"></i>
+            Create Account
+          </button>
+          
+          <div class="text-center">
+            <p class="text-muted mb-0">
+              Already have an account? 
+              <a href="{% url 'users:login' %}" class="text-primary text-decoration-none">Sign in here</a>
+            </p>
+          </div>
+        </form>
+        
+        <!-- Terms Notice -->
+        <div class="alert alert-info mt-4">
+          <i class="fas fa-info-circle me-2"></i>
+          <small>By creating an account, you agree to our Terms of Service and Privacy Policy.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation and enhancement
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            // Add loading state to button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
+                submitBtn.disabled = true;
+            }
+        });
+    });
+
+    // Password strength indicator
+    const password1 = document.getElementById('id_password1');
+    if (password1) {
+        // Create password strength indicator
+        const strengthDiv = document.createElement('div');
+        strengthDiv.className = 'password-strength';
+        strengthDiv.innerHTML = '<div class="password-strength-bar"></div>';
+        password1.parentNode.appendChild(strengthDiv);
+
+        password1.addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = strengthDiv.querySelector('.password-strength-bar');
+            
+            // Reset classes
+            strengthDiv.className = 'password-strength';
+            
+            if (password.length === 0) {
+                strengthBar.style.width = '0%';
+                return;
+            }
+
+            let strength = 0;
+            
+            // Check password criteria
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            // Set strength class
+            if (strength <= 2) {
+                strengthDiv.classList.add('password-weak');
+            } else if (strength <= 3) {
+                strengthDiv.classList.add('password-medium');
+            } else {
+                strengthDiv.classList.add('password-strong');
+            }
+        });
+    }
+
+    // Real-time form validation
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+
+        input.addEventListener('input', function() {
+            // Remove error state when user starts typing
+            this.classList.remove('is-invalid');
+            const errorDiv = this.parentNode.querySelector('.text-danger');
+            if (errorDiv && !errorDiv.textContent.trim()) {
+                errorDiv.style.display = 'none';
+            }
+        });
+    });
+
+    function validateField(field) {
+        const value = field.value.trim();
+        let isValid = true;
+        let errorMessage = '';
+
+        // Basic validation based on field type and name
+        if (field.hasAttribute('required') && !value) {
+            isValid = false;
+            errorMessage = field.getAttribute('data-required-message') || 'This field is required.';
+        }
+
+        if (field.type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid email address.';
+            }
+        }
+
+        if (field.name === 'phone_number' && value) {
+            const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+            if (!phoneRegex.test(value)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid phone number.';
+            }
+        }
+
+        if (field.name === 'username' && value) {
+            if (value.length < 3) {
+                isValid = false;
+                errorMessage = 'Username must be at least 3 characters long.';
+            }
+        }
+
+        if (field.name === 'password1' && value) {
+            if (value.length < 8) {
+                isValid = false;
+                errorMessage = 'Password must be at least 8 characters long.';
+            }
+        }
+
+        if (field.name === 'password2' && value) {
+            const password1 = document.getElementById('id_password1');
+            if (password1 && value !== password1.value) {
+                isValid = false;
+                errorMessage = 'Passwords do not match.';
+            }
+        }
+
+        // Apply validation classes and show/hide error messages
+        if (isValid) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+            hideFieldError(field);
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+            showFieldError(field, errorMessage);
+        }
+    }
+
+    function showFieldError(field, message) {
+        let errorDiv = field.parentNode.querySelector('.validation-error');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.className = 'validation-error text-danger small mt-1';
+            field.parentNode.appendChild(errorDiv);
+        }
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideFieldError(field) {
+        const errorDiv = field.parentNode.querySelector('.validation-error');
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+        }
+    }
+
+    // Email uniqueness check (debounced)
+    const emailField = document.getElementById('id_email');
+    if (emailField) {
+        let emailTimeout;
+        emailField.addEventListener('input', function() {
+            clearTimeout(emailTimeout);
+            emailTimeout = setTimeout(() => {
+                checkEmailUniqueness(this.value);
+            }, 500);
+        });
+    }
+
+    function checkEmailUniqueness(email) {
+        if (!email || !isValidEmail(email)) return;
+        
+        // You can implement AJAX call here to check email uniqueness
+        // For now, we'll rely on server-side validation
+    }
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Enhanced placeholder animations
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentNode.classList.add('focused');
+        });
+
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentNode.classList.remove('focused');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

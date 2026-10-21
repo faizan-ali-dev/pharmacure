@@ -1,0 +1,14 @@
+{% load static %}
+<div class="medicine-image {% if not has_image %}no-image{% endif %} {{ css_class }}" 
+     style="width: {{ size_config.width }}; height: {{ size_config.height }};">
+    {% if has_image %}
+        <img src="{{ image_url }}" 
+             alt="{{ medicine.name }}" 
+             loading="lazy"
+             style="width: 100%; height: 100%; object-fit: contain;">
+    {% else %}
+        <img src="{{ image_url }}" 
+             alt="No image available for {{ medicine.name }}" 
+             style="width: 100%; height: 100%; object-fit: contain; opacity: 0.8;">
+    {% endif %}
+</div>

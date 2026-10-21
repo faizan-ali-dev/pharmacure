@@ -1,0 +1,567 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load medicine_tags %}
+
+{% block title %}{{ doctor.title }} {{ doctor.full_name }} - PharMaCure{% endblock %}
+
+{% block extra_css %}
+<style>
+    .doctor-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.2rem 0 5rem 0;
+        padding-top: calc(2.2rem + 80px);
+        margin-bottom: 0.5rem;
+        margin-top: -80px;
+        position: relative;
+        overflow: visible;
+
+    }
+    
+    /* Doctor avatar removed - using initials only */
+
+    /* Enhanced placeholder for doctor detail */
+    .doctor-avatar-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 5px solid white;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #3b82f6 100%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 2.5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3), 
+                    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+                    0 0 0 1px rgba(59, 130, 246, 0.1);
+        position: relative;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .doctor-avatar-placeholder:before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        background: linear-gradient(45deg, #667eea, #764ba2, #3b82f6, #1d4ed8, #667eea);
+        border-radius: 50%;
+        z-index: -1;
+        opacity: 0.7;
+        animation: rotateDetail 4s linear infinite;
+    }
+
+    @keyframes rotateDetail {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .doctor-avatar-placeholder:hover {
+        transform: scale(1.08) rotate(5deg);
+        box-shadow: 0 20px 50px rgba(59, 130, 246, 0.4), 
+                    inset 0 3px 0 rgba(255, 255, 255, 0.3),
+                    0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    
+    .specialization-tag {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        margin: 3px 6px 3px 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+        border: none;
+        font-weight: 500;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .stat-box {
+        text-align: center;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #3b82f6;
+        display: block;
+    }
+    
+    .rating-display {
+        color: #fbbf24;
+        font-size: 1.5rem;
+    }
+    
+    .review-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .availability-status {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin: 5px;
+    }
+    
+    .available {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .busy {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .offline {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .btn-appointment {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .btn-appointment:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+        color: white;
+    }
+    
+    .contact-info {
+        background: #f1f5f9;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 12px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        gap: 0.75rem;
+        overflow: hidden;
+    }
+    
+    .contact-item > div:not(.contact-icon) {
+        flex: 1;
+        min-width: 0;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        overflow: hidden;
+    }
+    
+    .contact-item a {
+        word-break: break-word;
+        overflow-wrap: break-word;
+        display: inline-block;
+    }
+    
+    .contact-item strong {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    /* New hero-card that overlaps the hero section for a modern look */
+    .hero-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.25rem;
+        box-shadow: 0 12px 30px rgba(2,6,23,0.08);
+        border: 1px solid rgba(15,23,42,0.04);
+        margin-top: 0px;
+        position: relative;
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .doctor-name {
+        font-size: 1.7rem;
+        margin-bottom: 0.25rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .doctor-subtitle {
+        color: #475569;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    /* Make appointment area sticky on larger screens */
+    @media (min-width: 992px) {
+        .appointment-sticky {
+            position: sticky;
+            top: 110px;
+        }
+    }
+    
+    .contact-icon {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        max-width: 32px;
+        max-height: 32px;
+        background: #3b82f6;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .doctor-hero {
+            padding: 2rem 0;
+            padding-top: calc(2rem + 80px);
+        }
+        
+        .hero-card {
+            margin-top: 0px;
+            padding: 1rem;
+        }
+        
+        .hero-meta {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .doctor-name {
+            font-size: 1.4rem;
+        }
+        
+        .doctor-subtitle {
+            font-size: 0.85rem;
+        }
+        
+        .specialization-tag {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+        }
+        
+        .doctor-avatar-placeholder {
+            width: 96px;
+            height: 96px;
+            border-width: 4px;
+            font-size: 1.9rem;
+            letter-spacing: 2px;
+            margin: 0 auto;
+        }
+
+        .doctor-avatar-placeholder:before {
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+        }
+        
+        .info-card {
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-card h3,
+        .info-card h4 {
+            font-size: 1.1rem;
+        }
+        
+        .contact-item {
+            padding: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-info {
+            padding: 1rem;
+        }
+        
+        .spec-item {
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .spec-item .p-3 {
+            padding: 0.75rem !important;
+        }
+        
+        .spec-item .fs-3 {
+            font-size: 1.5rem !important;
+        }
+        
+        .spec-item h6 {
+            font-size: 0.9rem;
+        }
+        
+        .spec-item small {
+            font-size: 0.75rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .doctor-hero {
+            padding: 1.5rem 0;
+            padding-top: calc(1.5rem + 80px);
+        }
+        
+        .hero-card {
+            margin-top: 0px;
+            padding: 0.75rem;
+        }
+        
+        .doctor-name {
+            font-size: 1.2rem;
+        }
+        
+        .doctor-avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            font-size: 1.5rem;
+        }
+        
+        .info-card {
+            padding: 1rem;
+        }
+        
+        .contact-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            min-height: 28px;
+            max-width: 28px;
+            max-height: 28px;
+            font-size: 0.7rem;
+        }
+        
+        .contact-item {
+            padding: 8px;
+            gap: 0.5rem;
+        }
+        
+        .contact-item strong {
+            font-size: 0.85rem;
+        }
+        
+        .contact-item a,
+        .contact-item span {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="doctor-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="hero-card">
+                    <div class="hero-meta">
+                        <div class="d-flex align-items-center">
+                            <div class="doctor-avatar-placeholder me-3">
+                                {{ doctor.first_name|first }}{{ doctor.last_name|first }}
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start flex-column flex-md-row gap-3">
+                                <div>
+                                    <div class="doctor-name">{{ doctor.full_name }}</div>
+                                    <div class="doctor-subtitle">
+                                        {{ doctor.clinic_name|default:"Clinic" }} • {{ doctor.license_number|default:"License info" }}
+                                    </div>
+                                    <div class="mt-2">
+                                        {% for spec in doctor.specializations.all %}
+                                            <span class="specialization-tag">{{ spec.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="text-md-end">
+                                    <div class="text-muted small mt-2">{{ doctor.about|truncatewords:15 }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="info-card">
+                <h3 class="h4 mb-4">
+                    <i class="fas fa-address-book text-primary"></i> Contact Information
+                </h3>
+                <div class="contact-info">
+                    {% if doctor.phone_number %}
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <strong>Phone</strong><br>
+                            <a href="tel:{{ doctor.phone_number }}" class="text-decoration-none">{{ doctor.phone_number }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if doctor.email %}
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <strong>Email</strong><br>
+                            <a href="mailto:{{ doctor.email }}" class="text-decoration-none">{{ doctor.email }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if doctor.clinic_address %}
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Clinic Address</strong><br>
+                            <span class="text-muted">{{ doctor.clinic_address }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <strong>Working Hours</strong><br>
+                            <span class="text-muted">{{ doctor.working_hours|default:"9:00 AM - 6:00 PM" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="info-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-user-circle text-primary"></i> About Doctor
+                </h4>
+                <p class="text-muted mb-3">{{ doctor.about }}</p>
+                
+                <div class="mb-3">
+                    <h6 class="text-primary mb-2">
+                        <i class="fas fa-graduation-cap"></i> Qualifications
+                    </h6>
+                    <p class="text-muted small mb-0">{{ doctor.qualifications|default:"Not specified" }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-primary mb-2">
+                        <i class="fas fa-briefcase"></i> Experience
+                    </h6>
+                    <p class="text-muted small mb-0">{{ doctor.get_years_experience_display }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-primary mb-2">
+                        <i class="fas fa-language"></i> Languages
+                    </h6>
+                    <p class="text-muted small mb-0">{{ doctor.languages_spoken|default:"English, Urdu" }}</p>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-stethoscope text-primary"></i> Specializations
+                </h4>
+                <div class="specializations-sidebar">
+                    {% for spec in doctor.specializations.all %}
+                    <div class="spec-item mb-3">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3 border border-primary border-opacity-25">
+                            <span class="fs-3 me-3">{{ spec.icon }}</span>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 text-primary">{{ spec.name }}</h6>
+                                <small class="text-muted">{{ spec.description|truncatewords:8 }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="text-center">
+        <a href="{% url 'store:doctors_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Back to All Doctors
+        </a>
+    </div>
+</div>
+{% endblock %}

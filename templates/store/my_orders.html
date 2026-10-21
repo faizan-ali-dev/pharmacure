@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Orders - Pharmacure{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+  <!-- Orders Header -->
+  <div class="text-center mb-5">
+    <h1 class="form-title">
+      <i class="fas fa-history text-primary"></i>
+      My Orders
+    </h1>
+    <p class="text-muted">Track and manage your medicine orders</p>
+  </div>
+
+  {% if orders %}
+    <div class="orders-grid">
+      {% for order in orders %}
+      <div class="order-card">
+        <!-- Order Header -->
+        <div class="order-header">
+          <div class="order-info">
+            <h5 class="order-id">
+              <i class="fas fa-receipt me-2"></i>
+              Order #{{ order.id }}
+            </h5>
+            <div class="order-date">
+              <i class="fas fa-calendar me-1"></i>
+              {{ order.created_at|date:"M d, Y \a\t H:i" }}
+            </div>
+          </div>
+          <div class="order-status-badge">
+            {% if order.status == 'Pending' %}
+              <span class="status-badge status-pending">
+                <i class="fas fa-clock me-1"></i>
+                Pending
+              </span>
+            {% elif order.status == 'Delivered' %}
+              <span class="status-badge status-delivered">
+                <i class="fas fa-truck me-1"></i>
+                Delivered
+              </span>
+            {% elif order.status == 'Received by User' %}
+              <span class="status-badge status-completed">
+                <i class="fas fa-check-circle me-1"></i>
+                Completed
+              </span>
+            {% else %}
+              <span class="status-badge status-processing">
+                <i class="fas fa-cog fa-spin me-1"></i>
+                {{ order.status }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="order-items">
+          <h6 class="section-title">
+            <i class="fas fa-pills me-2"></i>
+            Items Ordered
+          </h6>
+          <div class="items-list">
+            {% for item in order.items.all %}
+            <div class="order-item">
+              <div class="item-info">
+                <div class="item-name">{{ item.medicine.name }}</div>
+                <div class="item-details">Qty: {{ item.quantity }} × Rs.{{ item.price }}</div>
+              </div>
+              <div class="item-total">Rs.{{ item.price|floatformat:0 }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Delivery Information -->
+        <div class="delivery-info">
+          <h6 class="section-title">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            Delivery Details
+          </h6>
+          <div class="delivery-address">{{ order.address }}</div>
+          {% if order.is_emergency_delivery %}
+          <div class="emergency-badge">
+            <i class="fas fa-bolt me-1"></i>
+            Emergency Delivery
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Order Footer -->
+        <div class="order-footer">
+          <div class="payment-info">
+            <div class="payment-method">
+              <i class="fas fa-money-bill-wave me-2"></i>
+              Cash on Delivery
+            </div>
+            <div class="order-total">
+              Total: <span class="total-amount">Rs.{{ order.total_amount }}</span>
+            </div>
+          </div>
+          
+          {% if order.status == 'Delivered' %}
+          <div class="order-actions">
+            <a href="{% url 'store:mark_order_received' order.id %}" class="btn btn-success btn-sm">
+              <i class="fas fa-check me-1"></i>
+              Mark as Received
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-box-open"></i>
+      </div>
+      <h3 class="empty-title">No orders yet</h3>
+      <p class="empty-message">You haven't placed any orders. Start shopping for your medical needs!</p>
+      <a href="{% url 'store:home' %}" class="btn btn-primary btn-lg">
+        <i class="fas fa-shopping-cart me-2"></i>
+        Start Shopping
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

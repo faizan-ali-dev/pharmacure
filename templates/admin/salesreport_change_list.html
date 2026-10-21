@@ -1,0 +1,32 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block result_list %}
+  <div class="alert alert-info">
+    <strong>Note:</strong> Sales reports are automatically updated when orders are placed or when order status changes to "Received by User".
+  </div>
+  <div class="results">
+    <table id="result_list">
+      <thead>
+        <tr>
+          <th scope="col">Report Type</th>
+          <th scope="col">Amount (Rs.)</th>
+          <th scope="col">Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+          <td>{{ result.get_key_display }}</td>
+          <td>Rs.{{ result.amount|floatformat:2 }}</td>
+          <td>{{ result.generated_at|date:"M j, Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">No sales reports generated yet. Place an order to see automatic reports.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

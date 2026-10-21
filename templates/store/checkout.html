@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - Pharmacure{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+  <!-- Checkout Header -->
+  <div class="text-center mb-5">
+    <h1 class="form-title">
+      <i class="fas fa-credit-card text-primary"></i>
+      Secure Checkout
+    </h1>
+    <p class="text-muted">Review your order and complete your purchase</p>
+  </div>
+
+  <div class="checkout-grid">
+    <!-- Shipping Details & Form -->
+    <div class="form-container">
+      <h4 class="mb-4">
+        <i class="fas fa-shipping-fast text-primary me-2"></i>
+        Shipping Details
+      </h4>
+      
+      <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label for="{{ form.address.id_for_label }}" class="form-label">
+            <i class="fas fa-map-marker-alt text-muted me-2"></i>
+            Delivery Address
+          </label>
+          {{ form.address }}
+        </div>
+        
+        <div class="form-check mb-4 p-3 rounded" style="background-color: var(--gray-100);">
+          {{ form.is_emergency_delivery }}
+          <label class="form-check-label fw-semibold ms-2" for="{{ form.is_emergency_delivery.id_for_label }}">
+            <i class="fas fa-bolt text-warning me-1"></i>
+            {{ form.is_emergency_delivery.label }}
+          </label>
+          <div class="alert alert-info mt-2 mb-0">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Emergency delivery charge: Rs.{{ emergency_delivery_charge }}</strong>
+            <br><small>Get your medicines delivered the same day!</small>
+          </div>
+        </div>
+        
+        <!-- Payment Method -->
+        <div class="alert alert-success mb-4">
+          <h6 class="mb-2">
+            <i class="fas fa-money-bill-wave me-2"></i>
+            Payment Method
+          </h6>
+          <p class="mb-0">
+            <strong>Cash on Delivery (COD)</strong><br>
+            <small>Pay when you receive your order. No advance payment required.</small>
+          </p>
+        </div>
+        
+        <button type="submit" class="btn btn-success btn-lg w-100">
+          <i class="fas fa-check-circle me-2"></i>
+          Place Order
+        </button>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="cart-summary">
+      <h4 class="mb-4">
+        <i class="fas fa-shopping-basket text-primary me-2"></i>
+        Order Summary
+      </h4>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span class="fw-bold">Rs.{{ subtotal }}</span>
+      </div>
+      
+      {% for it in items %}
+      <div class="summary-row">
+        <div class="d-flex flex-column">
+          <span>{{ it.medicine.name }}</span>
+          <small class="text-muted">Qty: {{ it.quantity }}</small>
+        </div>
+        <span class="fw-bold">Rs.{{ it.subtotal }}</span>
+      </div>
+      {% endfor %}
+
+      <div class="summary-row" id="emergency-charge-row" style="display: none;">
+        <span>Emergency Delivery</span>
+        <span class="fw-bold">Rs.{{ emergency_delivery_charge }}</span>
+      </div>
+
+      <div class="summary-row total-row">
+        <span class="h5">Total</span>
+        <span class="h5 fw-bold" id="total-amount">Rs.{{ subtotal }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emergencyCheckbox = document.getElementById('id_is_emergency_delivery');
+    const emergencyRow = document.getElementById('emergency-charge-row');
+    const totalAmount = document.getElementById('total-amount');
+    const subtotal = {{ subtotal }};
+    const emergencyCharge = {{ emergency_delivery_charge }};
+
+    function updateTotal() {
+        if (emergencyCheckbox.checked) {
+            emergencyRow.style.display = 'flex';
+            totalAmount.textContent = 'Rs.' + (subtotal + emergencyCharge);
+        } else {
+            emergencyRow.style.display = 'none';
+            totalAmount.textContent = 'Rs.' + subtotal;
+        }
+    }
+
+    emergencyCheckbox.addEventListener('change', updateTotal);
+});
+</script>
+{% endblock %}

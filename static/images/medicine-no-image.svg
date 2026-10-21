@@ -1,0 +1,86 @@
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f8f9fa;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#f1f3f4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pillGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.8" />
+        </linearGradient>
+        <linearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#dc2626;stop-opacity:0.8" />
+        </linearGradient>
+    </defs>
+    
+    <!-- Background with subtle pattern -->
+    <rect width="100%" height="100%" fill="url(#bgGradient)" stroke="#dee2e6" stroke-width="1" rx="12"/>
+    
+    <!-- Subtle grid pattern -->
+    <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" stroke-width="0.5" opacity="0.3"/>
+        </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)" rx="12"/>
+    
+    <!-- Main medicine bottle icon -->
+    <g transform="translate(150,100)">
+        <!-- Bottle shadow -->
+        <ellipse cx="2" cy="45" rx="28" ry="8" fill="#000" opacity="0.1"/>
+        
+        <!-- Bottle body -->
+        <rect x="-25" y="-5" width="50" height="55" rx="12" fill="url(#pillGradient)"/>
+        
+        <!-- Bottle neck -->
+        <rect x="-15" y="-20" width="30" height="20" rx="4" fill="url(#pillGradient)" opacity="0.9"/>
+        
+        <!-- Bottle cap -->
+        <rect x="-18" y="-30" width="36" height="12" rx="6" fill="#374151"/>
+        
+        <!-- Label background -->
+        <rect x="-20" y="5" width="40" height="25" rx="4" fill="#ffffff" opacity="0.95"/>
+        
+        <!-- Pills inside bottle -->
+        <circle cx="-8" cy="15" r="3" fill="#10b981" opacity="0.7"/>
+        <circle cx="8" cy="12" r="3" fill="#f59e0b" opacity="0.7"/>
+        <circle cx="0" cy="20" r="3" fill="#ef4444" opacity="0.7"/>
+        <circle cx="-5" cy="25" r="2.5" fill="#8b5cf6" opacity="0.7"/>
+        <circle cx="10" cy="22" r="2.5" fill="#06b6d4" opacity="0.7"/>
+        
+        <!-- Prescription symbol on label -->
+        <text x="0" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4f46e5">
+            Rx
+        </text>
+    </g>
+    
+    <!-- Medical cross top-left -->
+    <g transform="translate(60,60)">
+        <rect x="-2" y="-10" width="4" height="20" fill="url(#crossGradient)" rx="2"/>
+        <rect x="-10" y="-2" width="20" height="4" fill="url(#crossGradient)" rx="2"/>
+    </g>
+    
+    <!-- Medical cross top-right -->
+    <g transform="translate(240,60)">
+        <rect x="-2" y="-10" width="4" height="20" fill="url(#crossGradient)" rx="2"/>
+        <rect x="-10" y="-2" width="20" height="4" fill="url(#crossGradient)" rx="2"/>
+    </g>
+    
+    <!-- Pills scattered around -->
+    <circle cx="80" cy="140" r="4" fill="#10b981" opacity="0.6"/>
+    <circle cx="220" cy="130" r="4" fill="#f59e0b" opacity="0.6"/>
+    <ellipse cx="70" cy="160" rx="6" ry="3" fill="#ef4444" opacity="0.6"/>
+    <ellipse cx="230" cy="150" rx="6" ry="3" fill="#8b5cf6" opacity="0.6"/>
+    
+    <!-- Text -->
+    <text x="150" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#6b7280">
+        No Image Available
+    </text>
+    
+    <!-- Subtitle -->
+    <text x="150" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">
+        Medicine Image Not Provided
+    </text>
+</svg>

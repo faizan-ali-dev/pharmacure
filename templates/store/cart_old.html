@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Shopping Cart - Pharmacure{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h3 class="card-title">Your Cart</h3>
+    {% if items %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th class="text-center">Qty</th>
+            <th class="text-end">Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for it in items %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                {% if it.medicine.image %}
+                <img src="{{ it.medicine.image.url }}" style="width:64px;height:64px;object-fit:cover;" class="rounded me-3" />
+                {% endif %}
+                <div>
+                  <div class="fw-semibold">{{ it.medicine.name }}</div>
+                  <small class="text-muted">Rs.{{ it.medicine.price }}</small>
+                </div>
+              </div>
+            </td>
+            <td class="text-center">{{ it.quantity }}</td>
+            <td class="text-end">Rs.{{ it.subtotal }}</td>
+            <td class="text-end"><a href="{% url 'store:remove_from_cart' it.medicine.pk %}" class="btn btn-sm btn-outline-danger">Remove</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <div>
+        <a href="{% url 'store:home' %}" class="btn btn-outline-secondary">Continue Shopping</a>
+      </div>
+      <div>
+        <h5 class="mb-0">Total: <span class="text-primary">Rs.{{ total }}</span></h5>
+        <a href="{% url 'store:checkout' %}" class="btn btn-primary mt-2">Proceed to Checkout</a>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-muted">Your cart is empty.</p>
+    <a href="{% url 'store:home' %}" class="btn btn-outline-primary">Shop Now</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

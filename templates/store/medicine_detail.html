@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ medicine.name }} - Pharmacure{% endblock %}
+
+{% block content %}
+<div class="container mb-5">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mt-3 mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'store:home' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ medicine.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-5">
+    <!-- Product Image -->
+    <div class="col-lg-6">
+      <div class="medicine-card p-0 overflow-hidden">
+        {% if medicine.image %}
+          <img src="{{ medicine.image.url }}" class="w-100" style="height: 400px; object-fit: contain; background: var(--gray-100);" alt="{{ medicine.name }}" loading="lazy" />
+        {% else %}
+          <div class="medicine-image no-image" style="height: 400px;">
+            <img src="{% static 'images/medicine-no-image.svg' %}" alt="No image available for {{ medicine.name }}" />
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-lg-6">
+      <div class="product-details">
+        <h1 class="medicine-title mb-3">{{ medicine.name }}</h1>
+        
+        <!-- Rating and Reviews (placeholder) -->
+        <div class="d-flex align-items-center mb-3">
+          <div class="stars text-warning me-2">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+          </div>
+          <span class="text-muted">(4.0) • 128 reviews</span>
+        </div>
+
+        <!-- Price -->
+        <div class="price-section mb-4">
+          <span class="medicine-price">Rs.{{ medicine.price }}</span>
+          <span class="text-muted text-decoration-line-through ms-2">Rs.{{ medicine.price|floatformat:2|add:"100" }}</span>
+          <span class="badge bg-danger ms-2">Save Rs.100</span>
+        </div>
+
+        <!-- Stock Status -->
+        <div class="stock-status mb-4">
+          {% if medicine.stock > 10 %}
+            <div class="alert alert-success d-flex align-items-center">
+              <i class="fas fa-check-circle me-2"></i>
+              <strong>In Stock</strong> - {{ medicine.stock }} units available
+            </div>
+          {% elif medicine.stock > 0 %}
+            <div class="alert alert-warning d-flex align-items-center">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <strong>Low Stock</strong> - Only {{ medicine.stock }} left!
+            </div>
+          {% else %}
+            <div class="alert alert-danger d-flex align-items-center">
+              <i class="fas fa-times-circle me-2"></i>
+              <strong>Out of Stock</strong> - Will restock soon
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Description -->
+        <div class="product-description mb-4">
+          <h5 class="mb-3">
+            <i class="fas fa-info-circle text-primary"></i>
+            Description
+          </h5>
+          <p class="text-muted">{{ medicine.description }}</p>
+        </div>
+
+        <!-- Key Features -->
+        <div class="key-features mb-4">
+          <h5 class="mb-3">
+            <i class="fas fa-star text-warning"></i>
+            Key Features
+          </h5>
+          <ul class="list-unstyled">
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Authentic & FDA approved</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Fast acting formula</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Safe for regular use</li>
+            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Quality guaranteed</li>
+          </ul>
+        </div>
+
+        <!-- Add to Cart Form -->
+        {% if medicine.stock > 0 %}
+        <div class="add-to-cart-section">
+          <form method="post" action="{% url 'store:add_to_cart' medicine.pk %}">
+            {% csrf_token %}
+            <div class="row g-3 align-items-end mb-3">
+              <div class="col-auto">
+                <label for="quantity" class="form-label fw-semibold">Quantity:</label>
+                <div class="input-group" style="width: 120px;">
+                  <button type="button" class="btn btn-outline-secondary quantity-btn" onclick="decrementQuantity()">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <input id="quantity" name="quantity" type="number" value="1" min="1" max="{{ medicine.stock }}" class="form-control text-center" />
+                  <button type="button" class="btn btn-outline-secondary quantity-btn" onclick="incrementQuantity()">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-success btn-lg" type="submit">
+                  <i class="fas fa-cart-plus"></i>
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </form>
+          
+          {% if not user.is_authenticated %}
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <a href="{% url 'users:login' %}" class="alert-link">Login</a> to add items to cart and place orders.
+          </div>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="out-of-stock-section">
+          <button class="btn btn-secondary btn-lg" disabled>
+            <i class="fas fa-times-circle"></i>
+            Out of Stock
+          </button>
+          <p class="text-muted mt-2">This medicine is currently out of stock. We'll restock it soon!</p>
+        </div>
+        {% endif %}
+
+        <!-- Delivery Info -->
+        <div class="delivery-info mt-4 p-3 bg-light rounded">
+          <h6 class="mb-3">
+            <i class="fas fa-truck text-primary"></i>
+            Delivery Information
+          </h6>
+          <div class="row text-sm">
+            <div class="col-6">
+              <p class="mb-1"><i class="fas fa-clock text-muted"></i> Standard Delivery</p>
+              <p class="text-muted small">2-3 business days</p>
+            </div>
+            <div class="col-6">
+              <p class="mb-1"><i class="fas fa-bolt text-warning"></i> Emergency Delivery</p>
+              <p class="text-muted small">Same day (+Rs.50)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Information Tabs -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="medicine-card">
+        <ul class="nav nav-tabs" id="medicineInfoTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="dosage-tab" data-bs-toggle="tab" data-bs-target="#dosage" type="button" role="tab">
+              <i class="fas fa-pills"></i> Dosage & Usage
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="precautions-tab" data-bs-toggle="tab" data-bs-target="#precautions" type="button" role="tab">
+              <i class="fas fa-exclamation-triangle"></i> Precautions
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="side-effects-tab" data-bs-toggle="tab" data-bs-target="#side-effects" type="button" role="tab">
+              <i class="fas fa-info-circle"></i> Side Effects
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content p-4" id="medicineInfoTabsContent">
+          <div class="tab-pane fade show active" id="dosage" role="tabpanel">
+            <h5>Dosage Instructions</h5>
+            <p>Take as directed by your physician. Follow the recommended dosage for best results.</p>
+            <ul>
+              <li>Adults: 1-2 tablets daily</li>
+              <li>Children: Consult physician</li>
+              <li>Take with food or after meals</li>
+            </ul>
+          </div>
+          <div class="tab-pane fade" id="precautions" role="tabpanel">
+            <h5>Precautions</h5>
+            <ul>
+              <li>Store in a cool, dry place</li>
+              <li>Keep away from children</li>
+              <li>Do not exceed recommended dose</li>
+              <li>Consult doctor if pregnant or breastfeeding</li>
+            </ul>
+          </div>
+          <div class="tab-pane fade" id="side-effects" role="tabpanel">
+            <h5>Possible Side Effects</h5>
+            <p>Most medicines are safe when used as directed. However, some people may experience:</p>
+            <ul>
+              <li>Mild nausea</li>
+              <li>Drowsiness</li>
+              <li>Headache</li>
+            </ul>
+            <p>Consult your doctor if side effects persist.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+function incrementQuantity() {
+  const input = document.getElementById('quantity');
+  const max = parseInt(input.getAttribute('max'));
+  if (parseInt(input.value) < max) {
+    input.value = parseInt(input.value) + 1;
+  }
+}
+
+function decrementQuantity() {
+  const input = document.getElementById('quantity');
+  if (parseInt(input.value) > 1) {
+    input.value = parseInt(input.value) - 1;
+  }
+}
+</script>
+{% endblock %}
+{% endblock %}
